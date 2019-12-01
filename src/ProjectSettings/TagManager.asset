@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - MapButton
+  - win
   layers:
   - Default
   - TransparentFX

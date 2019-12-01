@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,14 +12,24 @@ public class PlayerController : MonoBehaviour
 
     public GameObject map1;
     public GameObject map2;
-
     private bool isMap1 = true;
+
     private Vector3 moveDirection;
+
+    public float startTime = 10.0f;
+    private float currentTime;
+
+    public Text timer;
+    public Text GameOver;
+
+    private bool isEndGame = false;
     // Start is called before the first frame update
     void Start()
     {
         cc = GetComponent<CharacterController>();
-
+        currentTime = startTime;
+        timer.text = currentTime.ToString("F2");
+        isEndGame = false;
     }
 
     // Update is called once per frame
@@ -31,13 +42,32 @@ public class PlayerController : MonoBehaviour
         }
         moveDirection.y -= gravity * Time.deltaTime;
         cc.Move(moveDirection * Time.deltaTime);
+
+        currentTime -= Time.deltaTime;
+        timer.text = currentTime.ToString("F2");
+
+        if(currentTime <= 0 && !isEndGame) {
+            GameOver.gameObject.SetActive(true);
+            FindObjectOfType<GameManager>().EndGame();
+            isEndGame = true;
+        }
     }
 
     void OnControllerColliderHit(ControllerColliderHit other){
-        Debug.Log("collide success");
         if (other.gameObject.CompareTag("MapButton"))
         {
-            Debug.Log("collide success");
+            changeMap();
+        }
+
+        if(other.gameObject.CompareTag("win") && !isEndGame) {
+            GameOver.text = "YOU WIN";
+            GameOver.gameObject.SetActive(true);
+            FindObjectOfType<GameManager>().EndGame();
+            isEndGame = true;
+        }
+    }
+
+    void changeMap() {
             if(isMap1) {
                 map1.SetActive(false);
                 map2.SetActive(true);
@@ -48,6 +78,5 @@ public class PlayerController : MonoBehaviour
                 map2.SetActive(false);
                 isMap1 = true;
             }
-        }
     }
 }

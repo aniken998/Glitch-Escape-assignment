@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour
             GameOver.gameObject.SetActive(true);
             FindObjectOfType<GameManager>().EndGame();
             isEndGame = true;
+            other.gameObject.SetActive(false);
         }
     }
 
